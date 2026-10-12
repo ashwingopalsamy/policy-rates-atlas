@@ -14,6 +14,7 @@ The figures on every page come from the open JSON and CSV API at https://rates.a
 - [Australia: cash rate target](https://rates.ashwingopalsamy.in/au/)
 - [Brazil: Selic target](https://rates.ashwingopalsamy.in/br/)
 - [Privacy](https://rates.ashwingopalsamy.in/privacy/): what is counted, and how to switch it off.
+- [Design system](https://rates.ashwingopalsamy.in/design/): the colours, type, components and rules the site is built from.
 
 ## Markdown
 - [India](https://rates.ashwingopalsamy.in/index.md)
