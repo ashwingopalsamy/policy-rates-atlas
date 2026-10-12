@@ -169,7 +169,6 @@ export function headers(inlineScripts: string[], markdown: string[] = []): strin
   Cross-Origin-Opener-Policy: same-origin
   Strict-Transport-Security: max-age=31536000; includeSubDomains
   Link: </llms.txt>; rel="describedby"; type="text/plain"
-  Vary: Accept
 
 /assets/*
   ! Cache-Control
