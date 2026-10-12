@@ -1,20 +1,26 @@
 /**
  * Prerenders every route into dist/ from the built shell (dist/index.html), using the same page modules as the client.
  * Text is rendered as of the build date; charts are drawn on load, and nothing on the page is replaced when the client
- * boots on the same route. Also writes the sitemap, robots.txt, 404.html and the security headers (with the CSP hash of
- * the inline theme script). Usage: node scripts/prerender.ts
+ * boots on the same route. Also writes the sitemap, robots.txt, 404.html, the Markdown mirror of each country page with
+ * llms-full.txt, and the security headers (with the CSP hash of the inline theme script). Usage: node scripts/prerender.ts
  */
 import { createHash } from 'node:crypto';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { parseHTML } from 'linkedom';
 import { buildAtlas } from './build-atlas.ts';
-import { CODES, META, MODEL, initAtlas, lede } from '../src/lib/atlas.ts';
+import { CODES, GENERATED, META, MODEL, bps, fmtD, fmtNext, initAtlas, lede, stanceOfPlay, upcoming, vText, voteText } from '../src/lib/atlas.ts';
 import { DEFAULT_CC } from '../src/app/shell.ts';
 import type { Code } from '../src/lib/atlas.ts';
 
 export const SITE = 'https://rates.ashwingopalsamy.in';
 const DIST = new URL('../dist/', import.meta.url).pathname;
+/** The repository's current name. GitHub redirects the old one, but the links here should not depend on that. */
+const REPO = 'https://github.com/ashwingopalsamy/policy-rates-atlas';
+/** The author as one entity, the same node the owner's other sites publish, so search and answer engines see one person. */
+const PERSON = { '@type': 'Person', '@id': 'https://ashwingopalsamy.in/#person', name: 'Ashwin Gopalsamy', url: 'https://ashwingopalsamy.in', sameAs: ['https://github.com/ashwingopalsamy', 'https://www.linkedin.com/in/ashwingopalsamy', 'https://x.com/ashwin2125'] };
+const OG_IMAGE = `${SITE}/og/home.png`;
+const OG_ALT = 'Policy Rate Atlas: central bank policy rates for seven economies';
 
 type Route = { path: string; page: 'world' | 'country' | 'privacy' | 'design' | 'notfound'; cc: Code | null; file: string };
 const strip = (html: string) => html.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
@@ -22,32 +28,96 @@ const attr = (s: string) => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').rep
 /** JSON safe inside a <script> element: no "</script" or "<!--" can be formed. */
 export const scriptJson = (v: unknown) => JSON.stringify(v).replace(/</g, '\\u003c');
 
+const countryUrl = (c: Code) => SITE + (c === DEFAULT_CC ? '/' : `/${c.toLowerCase()}/`);
 /** The default country's page lives at /, so /in/ points search engines there. */
-const canonicalOf = (r: Route) => SITE + (r.page === 'country' && r.cc === DEFAULT_CC ? '/' : r.path);
+const canonicalOf = (r: Route) => (r.page === 'country' && r.cc ? countryUrl(r.cc) : SITE + r.path);
+/** The Markdown mirror of a country page. The default country's page is the home page, so it mirrors as /index.md. */
+const mirrorOf = (c: Code) => (c === DEFAULT_CC ? '/index.md' : `/${c.toLowerCase()}.md`);
+const siteDescription = () => `Policy rates for ${CODES.length} central banks, every move since 2000, checked against official sources, with the findings that matter for borrowers and markets.`;
 
+/** A country page as Markdown. Every figure comes from the model the page renders from; nothing is typed in here. */
+export function countryMarkdown(c: Code): string {
+  const m = META[c], md = MODEL[c], last = md.policyMoves[md.policyMoves.length - 1], dec = last.decision, lc = c.toLowerCase();
+  const date = (iso: string) => fmtD(iso, c), nx = upcoming(c)[0], next = nx ? fmtNext(nx, c) : null, v = voteText(dec?.vote ?? null);
+  const change = last.action === 'framework' ? `target range introduced ${date(last.date)}: ${vText(last)}`
+    : `${bps(last.chg)} to ${vText(last)}, from ${vText(last.prev)}; ${dec ? `decided ${date(dec.date)}${dec.effective && dec.effective !== dec.date ? `, effective ${date(dec.effective)}` : ''}` : `effective ${date(last.date)}`}`;
+  const recent = md.policyMoves.slice(-10).reverse().map(x => `- ${date(x.date)}: ${x.action === 'framework' ? `target range ${vText(x)}` : `${bps(x.chg)} to ${vText(x)}`}`);
+  return [
+    `# ${m.name}: ${m.inst.toLowerCase()} ${vText(md.last)}`, '',
+    `Canonical: ${countryUrl(c)}`,
+    `Data as of ${fmtD(GENERATED, 'GB')}. Independent of the ${m.bank}; not affiliated with, authorised by or endorsed by it.`, '',
+    strip(lede(c)), '',
+    '## Position',
+    `- Level: ${vText(md.last)}`,
+    `- Last change: ${change}`,
+    ...(v ? [`- Vote: ${v.tally} (${v.sub.toLowerCase()})`] : []),
+    ...(dec?.stance ? [`- Stance: ${dec.stance}`] : []),
+    `- Cycle: ${stanceOfPlay(c).txt}`,
+    `- Next decision: ${next ? `${next.date}, ${next.time} (${next.inText})` : 'not on our calendar yet'}`,
+    ...(dec?.excerpt ? ['', `> ${dec.excerpt}`, `> ${m.body}, ${date(dec.date)}`] : []),
+    '', '## Recent moves, newest first', ...recent, '',
+    '## Data',
+    `- Current release (JSON): ${SITE}/api/v1/countries/${lc}.json`,
+    `- Change points (CSV): ${SITE}/api/v1/countries/${lc}/series.csv`,
+    `- Decisions (CSV): ${SITE}/api/v1/countries/${lc}/decisions.csv`,
+    `- Release ${md.release}, from ${md.sources} official sources`,
+    ...(dec?.url ? [`- Latest ${m.doc ?? 'release'}: ${dec.url}`] : []),
+    '', '## Licence',
+    `- The figures are published records. No blanket licence is asserted for them, and publisher terms apply: ${REPO}/blob/main/DATA-LICENSE.md`,
+    '- Nothing here is a forecast.', '',
+  ].join('\n');
+}
+
+/** Every country page in one file, for agents that read a single document. */
+export function llmsFull(): string {
+  return [
+    '# Policy Rate Atlas: full text', '',
+    `> Central bank policy rates for ${CODES.length} economies, computed from the published records shown on each page. The open JSON and CSV API under ${SITE}/api/v1/ is the primary machine interface. Index: ${SITE}/llms.txt`,
+    ...CODES.map(c => `\n---\n\n${countryMarkdown(c)}`),
+  ].join('\n');
+}
+
+/** The <head> tags for one route: description, robots, canonical, Markdown mirror, Open Graph, Twitter and JSON-LD. */
 function head(r: Route, title: string): string {
-  const url = canonicalOf(r);
-  const description = r.page === 'country' && r.cc ? strip(lede(r.cc))
+  const url = canonicalOf(r), personId = PERSON['@id'], siteId = `${SITE}/#site`, description = siteDescription();
+  const pageDescription = r.page === 'country' && r.cc ? strip(lede(r.cc))
     : r.page === 'privacy' ? 'What Policy Rate Atlas counts, how long it is kept and how to switch it off. No cookies and no personal data.'
     : r.page === 'design' ? 'The colours, type, components and rules Policy Rate Atlas is built from, rendered with the live stylesheet.'
-    : `Policy rates for ${CODES.length} central banks, every move since 2000, checked against official sources, with the findings that matter for borrowers and markets.`;
-  const ld = r.page === 'country' && r.cc ? {
-    '@context': 'https://schema.org', '@type': 'Dataset', name: `${META[r.cc].bank} ${META[r.cc].inst.toLowerCase()} history`, description, url,
-    license: 'https://opensource.org/licenses/MIT', isAccessibleForFree: true, spatialCoverage: META[r.cc].name,
-    temporalCoverage: `2000-01-01/${MODEL[r.cc].last.date}`, creator: { '@type': 'Person', name: 'Ashwin Gopalsamy' },
-    isBasedOn: META[r.cc].bank,
+    : description;
+  const mirror = r.page === 'country' && r.cc ? mirrorOf(r.cc) : null;
+  const page = r.page === 'country' && r.cc ? {
+    '@type': 'Dataset', name: `${META[r.cc].bank} ${META[r.cc].inst.toLowerCase()} history`, description: pageDescription, url,
+    license: `${REPO}/blob/main/DATA-LICENSE.md`, isAccessibleForFree: true, spatialCoverage: META[r.cc].name,
+    temporalCoverage: `2000-01-01/${MODEL[r.cc].last.date}`, creator: { '@id': personId }, publisher: { '@id': personId },
+    isBasedOn: META[r.cc].bank, isPartOf: { '@id': siteId },
     distribution: [
       { '@type': 'DataDownload', encodingFormat: 'application/json', contentUrl: `${SITE}/api/v1/countries/${r.cc.toLowerCase()}.json` },
       { '@type': 'DataDownload', encodingFormat: 'text/csv', contentUrl: `${SITE}/api/v1/countries/${r.cc.toLowerCase()}/series.csv` },
     ],
-  } : { '@context': 'https://schema.org', '@type': 'WebSite', name: 'Policy Rate Atlas', url: SITE + '/' };
+  } : r.page === 'world' ? {
+    '@type': 'CollectionPage', name: title, description: pageDescription, url, isPartOf: { '@id': siteId },
+    mainEntity: { '@type': 'ItemList', itemListElement: CODES.map((c, i) => ({ '@type': 'ListItem', position: i + 1, name: META[c].name, url: countryUrl(c) })) },
+  } : r.page === 'privacy' || r.page === 'design' ? { '@type': 'WebPage', name: title, description: pageDescription, url, isPartOf: { '@id': siteId } } : null;
+  const graph = page && { '@context': 'https://schema.org', '@graph': [
+    { '@type': 'WebSite', '@id': siteId, name: 'Policy Rate Atlas', url: `${SITE}/`, description, inLanguage: 'en', publisher: { '@id': personId } },
+    { '@type': 'WebApplication', '@id': `${SITE}/#app`, name: 'Policy Rate Atlas', url: `${SITE}/`, description, applicationCategory: 'FinanceApplication', operatingSystem: 'Any', browserRequirements: 'Requires JavaScript', isAccessibleForFree: true, offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' }, license: 'https://opensource.org/licenses/MIT', author: { '@id': personId } },
+    PERSON,
+    page,
+  ] };
   return [
-    `<meta name="description" content="${attr(description)}" />`,
-    r.page === 'notfound' ? '<meta name="robots" content="noindex" />' : `<link rel="canonical" href="${url}" />`,
+    `<meta name="description" content="${attr(pageDescription)}" />`,
+    r.page === 'notfound' ? '<meta name="robots" content="noindex" />' : '<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1" />',
+    r.page === 'notfound' ? '' : `<link rel="canonical" href="${url}" />`,
+    mirror ? `<link rel="alternate" type="text/markdown" href="${mirror}" title="Markdown" />` : '',
     `<meta property="og:type" content="website" />`, `<meta property="og:site_name" content="Policy Rate Atlas" />`,
-    `<meta property="og:title" content="${attr(title)}" />`, `<meta property="og:description" content="${attr(description)}" />`, `<meta property="og:url" content="${url}" />`,
-    `<meta name="twitter:card" content="summary" />`,
-    r.page === 'notfound' ? '' : `<script type="application/ld+json">${scriptJson(ld)}</script>`,
+    `<meta property="og:title" content="${attr(title)}" />`, `<meta property="og:description" content="${attr(pageDescription)}" />`, `<meta property="og:url" content="${url}" />`,
+    `<meta property="og:locale" content="en" />`,
+    `<meta property="og:image" content="${OG_IMAGE}" />`, `<meta property="og:image:type" content="image/png" />`,
+    `<meta property="og:image:width" content="1200" />`, `<meta property="og:image:height" content="630" />`, `<meta property="og:image:alt" content="${attr(OG_ALT)}" />`,
+    `<meta name="twitter:card" content="summary_large_image" />`, `<meta name="twitter:site" content="@ashwin2125" />`, `<meta name="twitter:creator" content="@ashwin2125" />`,
+    `<meta name="twitter:title" content="${attr(title)}" />`, `<meta name="twitter:description" content="${attr(pageDescription)}" />`,
+    `<meta name="twitter:image" content="${OG_IMAGE}" />`, `<meta name="twitter:image:alt" content="${attr(OG_ALT)}" />`,
+    graph ? `<script type="application/ld+json">${scriptJson(graph)}</script>` : '',
   ].filter(Boolean).join('\n    ');
 }
 
@@ -82,7 +152,7 @@ async function render(shell: string, r: Route, state: string): Promise<string> {
 }
 
 /** The security headers. The CSP allows only this origin plus the Cloudflare Web Analytics beacon. */
-export function headers(inlineScripts: string[]): string {
+export function headers(inlineScripts: string[], markdown: string[] = []): string {
   const hashes = inlineScripts.map(s => `'sha256-${createHash('sha256').update(s).digest('base64')}'`).join(' ');
   const csp = [
     "default-src 'self'", `script-src 'self' ${hashes} https://static.cloudflareinsights.com`, "style-src 'self' 'unsafe-inline'",
@@ -98,6 +168,8 @@ export function headers(inlineScripts: string[]): string {
   Permissions-Policy: camera=(), microphone=(), geolocation=(), interest-cohort=()
   Cross-Origin-Opener-Policy: same-origin
   Strict-Transport-Security: max-age=31536000; includeSubDomains
+  Link: </llms.txt>; rel="describedby"; type="text/plain"
+  Vary: Accept
 
 /assets/*
   ! Cache-Control
@@ -117,7 +189,7 @@ export function headers(inlineScripts: string[]): string {
 /data/snapshots/*
   ! Cache-Control
   Cache-Control: public, max-age=86400, immutable
-`;
+${markdown.map(p => `\n${p}\n  Content-Type: text/markdown; charset=utf-8\n`).join('')}`;
 }
 
 async function main() {
@@ -143,10 +215,12 @@ async function main() {
     for (const m of html.matchAll(/<script>([\s\S]*?)<\/script>/g)) inline.add(m[1]);
     writeFileSync(out, html);
   }
-  writeFileSync(join(DIST, '_headers'), headers([...inline]));
-  writeFileSync(join(DIST, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${routes.filter(r => r.page !== 'notfound' && canonicalOf(r) === SITE + r.path).map(r => `  <url><loc>${SITE}${r.path}</loc><lastmod>${data.generatedAt}</lastmod></url>`).join('\n')}\n</urlset>\n`);
+  writeFileSync(join(DIST, '_headers'), headers([...inline], CODES.map(mirrorOf)));
+  writeFileSync(join(DIST, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${routes.filter(r => r.page !== 'notfound' && canonicalOf(r) === SITE + r.path).map(r => `  <url><loc>${SITE}${r.path}</loc><lastmod>${today}</lastmod></url>`).join('\n')}\n</urlset>\n`);
+  for (const c of CODES) writeFileSync(join(DIST, mirrorOf(c)), countryMarkdown(c));
+  writeFileSync(join(DIST, 'llms-full.txt'), llmsFull());
   writeFileSync(join(DIST, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${SITE}/sitemap.xml\n`);
-  console.log(`prerendered ${routes.length} routes as of ${today}`);
+  console.log(`prerendered ${routes.length} routes as of ${today}, with ${CODES.length} Markdown mirrors`);
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) await main();

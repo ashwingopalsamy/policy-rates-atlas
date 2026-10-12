@@ -1,0 +1,3 @@
+Policy Rate Atlas
+Made by Ashwin Gopalsamy, https://ashwingopalsamy.in
+Built with Vite and TypeScript. Type: Inter and Geist Mono, self-hosted through Fontsource. Flags: HatScripts/circle-flags (MIT).

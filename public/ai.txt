@@ -1,0 +1,21 @@
+# Policy Rate Atlas: how automated readers may use this site
+# https://rates.ashwingopalsamy.in/
+
+Search engines, answer engines and agents may read, quote and cite these pages.
+Please link to the page you used.
+
+Prose:   CC BY 4.0 (attribution required).
+Data:    no blanket licence is asserted for the figures. Each release carries its source URLs, retrieval timestamps, checksums and evidence class; publisher terms apply. See DATA-LICENSE.md. The Brazil series follows the Banco Central do Brasil's ODbL 1.0.
+Code:    MIT, https://github.com/ashwingopalsamy/policy-rates-atlas
+Names:   source titles, marks and publisher materials belong to their owners. The site is not affiliated with, authorised by or endorsed by any central bank.
+
+Machine-readable (the open API is the primary interface):
+  /api/v1/countries.json
+  /api/v1/latest.json
+  /api/v1/schedule.json
+  /api/v1/countries/{code}.json
+  /api/v1/countries/{code}/series.csv
+  /api/v1/countries/{code}/decisions.csv
+  /llms.txt
+  /llms-full.txt
+  /index.md, /us.md, /ea.md, /gb.md, /ca.md, /au.md, /br.md   (each country page as Markdown)

@@ -1,0 +1,46 @@
+# Policy Rate Atlas
+
+> Central bank policy rates for seven economies (India, United States, euro area, United Kingdom, Canada, Australia and Brazil): every change since 2000, checked against official sources, with the decisions, cycles and gaps behind them. Independent: not affiliated with, authorised by or endorsed by any central bank.
+
+The figures on every page come from the open JSON and CSV API at https://rates.ashwingopalsamy.in/api/v1/, which is the primary machine interface. Use it for numbers, and cite the page or release you used.
+
+## Pages
+- [Home: India, policy repo rate](https://rates.ashwingopalsamy.in/): the default country page.
+- [World view](https://rates.ashwingopalsamy.in/world/): the seven banks side by side.
+- [United States: federal funds target](https://rates.ashwingopalsamy.in/us/)
+- [Euro area: deposit facility rate](https://rates.ashwingopalsamy.in/ea/)
+- [United Kingdom: Bank Rate](https://rates.ashwingopalsamy.in/gb/)
+- [Canada: overnight rate target](https://rates.ashwingopalsamy.in/ca/)
+- [Australia: cash rate target](https://rates.ashwingopalsamy.in/au/)
+- [Brazil: Selic target](https://rates.ashwingopalsamy.in/br/)
+- [Privacy](https://rates.ashwingopalsamy.in/privacy/): what is counted, and how to switch it off.
+
+## Markdown
+- [India](https://rates.ashwingopalsamy.in/index.md)
+- [United States](https://rates.ashwingopalsamy.in/us.md)
+- [Euro area](https://rates.ashwingopalsamy.in/ea.md)
+- [United Kingdom](https://rates.ashwingopalsamy.in/gb.md)
+- [Canada](https://rates.ashwingopalsamy.in/ca.md)
+- [Australia](https://rates.ashwingopalsamy.in/au.md)
+- [Brazil](https://rates.ashwingopalsamy.in/br.md)
+
+## Data
+- [Countries](https://rates.ashwingopalsamy.in/api/v1/countries.json): every bank, its current level and its release.
+- [Latest levels](https://rates.ashwingopalsamy.in/api/v1/latest.json): the level in force at each bank.
+- [Schedule](https://rates.ashwingopalsamy.in/api/v1/schedule.json): announced decision times.
+- Per bank, with codes in, us, ea, gb, ca, au and br: `/api/v1/countries/{code}.json` (current release), `/api/v1/countries/{code}/series.csv` (one row per change) and `/api/v1/countries/{code}/decisions.csv` (one row per decision).
+- Immutable, content-addressed releases: `/api/v1/releases/{CODE}/{hash}.json`.
+- The same releases on Hugging Face, in Parquet, CSV and JSONL: [central-bank-policy-rates](https://huggingface.co/datasets/ashwingopalsamy/central-bank-policy-rates).
+
+## Source
+- [Repository](https://github.com/ashwingopalsamy/policy-rates-atlas): code under the MIT licence.
+- [Data rights](https://github.com/ashwingopalsamy/policy-rates-atlas/blob/main/DATA-LICENSE.md): no blanket licence is asserted for the figures; publisher terms apply.
+
+## Author
+- [Ashwin Gopalsamy](https://ashwingopalsamy.in): distributed systems, fintech and applied AI. Also on [GitHub](https://github.com/ashwingopalsamy), [LinkedIn](https://www.linkedin.com/in/ashwingopalsamy) and [X](https://x.com/ashwin2125).
+
+## Optional
+- [llms-full.txt](https://rates.ashwingopalsamy.in/llms-full.txt): the country pages in Markdown, in one file.
+- [ai.txt](https://rates.ashwingopalsamy.in/ai.txt): how automated readers may use the site.
+- [Sitemap](https://rates.ashwingopalsamy.in/sitemap.xml)
+- [Security policy](https://rates.ashwingopalsamy.in/.well-known/security.txt)
