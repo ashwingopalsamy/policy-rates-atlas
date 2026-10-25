@@ -103,7 +103,7 @@ This is not an official product of any central bank. For anything that matters, 
 | `countries` | One row per country | 1 | What each country’s data covers: the bank, the instrument, the dates covered and the release it was built from. |
 | `eras` | One row per instrument period | 2 | The periods in which one instrument and basis applied. A change of era is why `change_bps` is null at its first point. |
 | `events` | One row per context event | 8 | Dated events that help read the rate history. Context only, not causal claims. |
-| `sources` | One row per source | 81 | Every source the rows cite: official series, statements, calendars and labelled secondary sources. |
+| `sources` | One row per source | 82 | Every source the rows cite: official series, statements, calendars and labelled secondary sources. |
 | `transmission` | One row per loan product per country | 2 | How the policy rate reaches common loans: the benchmark each is priced off, how often it resets and how directly a change passes through. Curated reference notes. |
 
 Every configuration has one split, `full`, because this is a historical record rather than a train/test corpus. The Parquet files under `data/` are the only files mapped to configurations. CSV copies of every table and JSONL copies of `rates` and `decisions` are under `exports/`, deliberately left out of the configurations so the viewer does not count them twice. Column types are in [`schema/`](schema/) and every column is described in [`schema/data-dictionary.json`](schema/data-dictionary.json).
@@ -161,7 +161,7 @@ Each country’s data comes from one content-addressed release, also served by t
 
 | Country | Release (SHA-256 content hash) | Observed through |
 | --- | --- | --- |
-| India | `6b9bdc02c553c5cdb32c49c1a749a6e7760d2e0adcfe28990fed8b9719739060` | 7 Oct 2026 |
+| India | `74fbfe12104445e4fca9118fee916a95b72be52510aed14606f226d23204f22b` | 7 Oct 2026 |
 
 `provenance/build-manifest.json` records those releases, the row count of every configuration and a checksum of every file; `SHA256SUMS` covers everything. The build is byte-for-byte reproducible from [the source repository](https://github.com/ashwingopalsamy/repo-rate-visualizer):
 

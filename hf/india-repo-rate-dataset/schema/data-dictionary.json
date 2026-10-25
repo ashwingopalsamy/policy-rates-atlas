@@ -852,7 +852,7 @@
       "name": "sources",
       "description": "Every source the rows cite: official series, statements, calendars and labelled secondary sources.",
       "grain": "One row per source",
-      "row_count": 81,
+      "row_count": 82,
       "columns": [
         {
           "name": "source_id",

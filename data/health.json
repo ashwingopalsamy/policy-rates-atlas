@@ -1,31 +1,30 @@
 {
   "IN": {
-    "checkedAt": "2026-10-18T08:01:53.147Z",
+    "checkedAt": "2026-10-25T08:25:45.785Z",
     "status": "ok"
   },
   "US": {
-    "checkedAt": "2026-10-18T08:01:53.147Z",
+    "checkedAt": "2026-10-25T08:25:45.785Z",
     "status": "ok"
   },
   "AU": {
-    "checkedAt": "2026-10-18T08:01:53.147Z",
+    "checkedAt": "2026-10-25T08:25:45.785Z",
     "status": "ok"
   },
   "BR": {
-    "checkedAt": "2026-10-18T08:01:53.147Z",
-    "status": "failed",
-    "detail": "SourceParseError: BCB SGS response is not JSON"
+    "checkedAt": "2026-10-25T08:25:45.785Z",
+    "status": "ok"
   },
   "CA": {
-    "checkedAt": "2026-10-18T08:01:53.147Z",
+    "checkedAt": "2026-10-25T08:25:45.785Z",
     "status": "ok"
   },
   "EA": {
-    "checkedAt": "2026-10-18T08:01:53.147Z",
+    "checkedAt": "2026-10-25T08:25:45.785Z",
     "status": "ok"
   },
   "GB": {
-    "checkedAt": "2026-10-18T08:01:53.147Z",
+    "checkedAt": "2026-10-25T08:25:45.785Z",
     "status": "ok"
   }
 }

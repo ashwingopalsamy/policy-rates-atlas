@@ -1,13 +1,13 @@
 {
   "schemaVersion": 2,
   "meta": {
-    "snapshotId": "2026-10-07-v2",
-    "retrievedAt": "2026-10-07T12:52:39.041Z",
+    "snapshotId": "2026-10-25-v2",
+    "retrievedAt": "2026-10-25T08:24:24.508Z",
     "latestOfficialDate": "2026-10-07",
     "latestRecordedDate": "2026-10-07",
-    "latestSourcePublishedAt": "2026-10-07T00:00:00.000Z",
+    "latestSourcePublishedAt": "2026-10-21T00:00:00.000Z",
     "sourceUrl": "https://www.rbi.org.in/",
-    "checksum": "sha256:df441d91e2a4d6d38a91997719ebd6d4bf524e4cf29d7e1e2acf4fd5897b92eb",
+    "checksum": "sha256:8a5c9f931a5f1d6facf00d71d73c583ebc5a2f6bacec30c31ee5ff3a86131369",
     "generatedBy": "scripts/fetch-rbi-data.js"
   },
   "current": {
@@ -27,8 +27,8 @@
       "title": "RBI Monetary Policy archive",
       "url": "https://www.rbi.org.in/scripts/Annualpolicy.aspx",
       "publishedAt": null,
-      "retrievedAt": "2026-10-07T12:52:42.203Z",
-      "checksum": "sha256:d727889c9a8865da9e5f10c785b94c57708e32191c502d8540ddec686888fb48"
+      "retrievedAt": "2026-10-25T08:24:25.813Z",
+      "checksum": "sha256:cd2ea397ee070c134719c85519c287dcfcf5144f3cbaeb48914fb3c75b9b8715"
     },
     {
       "id": "source-3270380f0b7d",
@@ -36,7 +36,7 @@
       "title": "Monetary Policy Statement, 2026-27 Resolution of the Monetary Policy Committee April 6 to 8, 2026",
       "url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=62514",
       "publishedAt": "2026-04-08T00:00:00.000Z",
-      "retrievedAt": "2026-10-07T12:52:43.620Z",
+      "retrievedAt": "2026-10-25T08:24:26.858Z",
       "checksum": "sha256:020ab7a8b9b6c4d18f2fd2d67bdeea49d075837f3805ef7281d706c09f4e5520"
     },
     {
@@ -45,7 +45,7 @@
       "title": "Monetary Policy Statement, 2026-27 Resolution of the Monetary Policy Committee June 3 to 5, 2026",
       "url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=62863",
       "publishedAt": "2026-06-05T00:00:00.000Z",
-      "retrievedAt": "2026-10-07T12:52:43.844Z",
+      "retrievedAt": "2026-10-25T08:24:26.950Z",
       "checksum": "sha256:d84eb27f0d4ba598203a7c81ff054101edf46266da03373beccafbef4c8cd959"
     },
     {
@@ -54,7 +54,7 @@
       "title": "Monetary Policy Statement, 2026-27 Resolution of the Monetary Policy Committee August 3 to 5, 2026",
       "url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=63287",
       "publishedAt": "2026-08-05T00:00:00.000Z",
-      "retrievedAt": "2026-10-07T12:52:44.442Z",
+      "retrievedAt": "2026-10-25T08:24:28.078Z",
       "checksum": "sha256:ddc7eaaac07781c0d8b4513ca72c0db97431e672bcd3bb547307994e5ef0ff99"
     },
     {
@@ -63,8 +63,8 @@
       "title": "RBI Current Policy Rates",
       "url": "https://www.rbi.org.in/",
       "publishedAt": null,
-      "retrievedAt": "2026-10-07T12:52:40.892Z",
-      "checksum": "sha256:f0903c73b5b9def9f77c20d13c2edcb6b177a70a47e821b43b788a1897a22d61"
+      "retrievedAt": "2026-10-25T08:24:24.859Z",
+      "checksum": "sha256:159d748d36573d79269f39ef1e182a819534bda94e33f37b9df40d36b26cadfe"
     },
     {
       "id": "source-cdb8e605e1d7",
@@ -72,7 +72,7 @@
       "title": "Minutes of the Monetary Policy Committee Meeting, April 6 to 8, 2026",
       "url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=62599",
       "publishedAt": "2026-04-22T00:00:00.000Z",
-      "retrievedAt": "2026-10-07T12:52:43.940Z",
+      "retrievedAt": "2026-10-25T08:24:27.021Z",
       "checksum": "sha256:6ddb65f57e71d60cc32a2f5308a61a4e2b764c4c9bcbe424b21092d035f5384c"
     },
     {
@@ -81,7 +81,7 @@
       "title": "Minutes of the Monetary Policy Committee Meeting, June 3 to 5, 2026",
       "url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=62974",
       "publishedAt": "2026-06-19T00:00:00.000Z",
-      "retrievedAt": "2026-10-07T12:52:43.712Z",
+      "retrievedAt": "2026-10-25T08:24:27.123Z",
       "checksum": "sha256:29fc6fd71c7c322247b67218b698da4db95fcab6b411f2de20a36964cf77a36c"
     },
     {
@@ -108,7 +108,7 @@
       "title": "Minutes of the Monetary Policy Committee Meeting, August 3 to 5, 2026",
       "url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=63403",
       "publishedAt": "2026-08-19T00:00:00.000Z",
-      "retrievedAt": "2026-10-07T12:52:44.367Z",
+      "retrievedAt": "2026-10-25T08:24:28.112Z",
       "checksum": "sha256:53692f2551453b7b2f591e015c2d1de49d5e72724ccdd4d452395abd9cd7ace8"
     },
     {
@@ -117,8 +117,17 @@
       "title": "Monetary Policy Statement, 2026-27 Resolution of the Monetary Policy Committee October 5 to 7, 2026",
       "url": "https://www.rbi.org.in/scripts/BS_PressReleaseDisplay.aspx?prid=63742",
       "publishedAt": "2026-10-07T00:00:00.000Z",
-      "retrievedAt": "2026-10-07T12:52:44.799Z",
+      "retrievedAt": "2026-10-25T08:24:28.127Z",
       "checksum": "sha256:bd4e2d0ee583c4952207b3c10bd4d4ed89e100263ef7bd7f0608cce62b5266f3"
+    },
+    {
+      "id": "source-03fe7606de71",
+      "type": "policy-minutes",
+      "title": "Minutes of the Monetary Policy Committee Meeting, October 5 to 7, 2026",
+      "url": "https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=63839",
+      "publishedAt": "2026-10-21T00:00:00.000Z",
+      "retrievedAt": "2026-10-25T08:24:27.621Z",
+      "checksum": "sha256:00e90172f84d7a1066a1e9549d65ae406599298ce94ffd2cbf9d07d04e6aad52"
     }
   ],
   "decisions": [
