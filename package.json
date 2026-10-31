@@ -31,7 +31,7 @@
     "linkedom": "0.18.13",
     "typescript": "7.0.2",
     "vite": "8.3.3",
-    "wrangler": "4.148.0"
+    "wrangler": "4.156.0"
   },
   "overrides": {
     "sharp": "0.35.5"
